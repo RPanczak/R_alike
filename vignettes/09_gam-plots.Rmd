@@ -114,6 +114,7 @@ plot(p)
 
 p_unload(mgcViz)
 ```
+
 # `visibly` package
 
 ```{r}
@@ -128,4 +129,16 @@ plot_gam_by(m2, main_var = x2, by_var = fac)
 plot_gam_check(m2)
 
 p_unload(visibly)
+```
+
+# `visreg` package
+
+```{r}
+p_load(visreg)
+
+visreg(m1, gg=TRUE)
+
+visreg(m2, gg=TRUE)
+
+p_unload(visreg)
 ```
