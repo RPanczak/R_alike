@@ -1,0 +1,131 @@
+---
+title: "R_alike project 09"
+description: "GAM plots"
+date: "`r Sys.Date()`"
+author:
+  - name: Radoslaw Panczak 
+    url: https://github.com/RPanczak
+    affiliation: ISPM
+    affiliation_url: https://www.ispm.unibe.ch/
+    orcid_id: 0000-0001-5141-683X
+# bibliography: biblio.bib
+output:
+  distill::distill_article:
+    highlight: pygments
+    toc: true
+    toc_depth: 1
+    number_sections: true
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = TRUE, 
+                      # fig.width=8, fig.height=6, 
+                      # out.width="800px", out.height="600px",
+                      dpi=300)
+
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+
+options(scipen=999)
+set.seed(12345)
+
+library(pacman)
+```
+
+# Setup
+
+## Simulated data
+
+```{r}
+p_load(mgcv)
+
+df <- gamSim(4, n = 400, verbose = FALSE)
+```
+
+## Two example models
+
+```{r}
+m1 <- gam(y ~ s(x2) + fac, data = df)
+summary(m1)
+
+m2 <- gam(y ~ s(x2, by = fac), data = df)
+summary(m2)
+```
+
+
+# `mgcv` package 
+
+```{r}
+plot(m1, pages=1)
+gam.check(m1)
+
+plot(m2, pages=1)
+gam.check(m2)
+```
+
+# `gratia` package
+
+```{r}
+p_load(gratia)
+
+draw(m1)
+appraise(m1)
+
+draw(m2)
+appraise(m2)
+
+p_unload(gratia)
+```
+
+# `tidymv` package
+
+```{r}
+p_load(tidymv)
+p_load(ggplot2)
+
+plot_smooths(model = m1,
+             series = x2)
+
+plot_smooths(model = m2,
+             series = x2,
+             comparison = fac
+) +
+  theme(legend.position = "top")
+
+p_unload(tidymv)
+p_unload(ggplot2)
+```
+
+# `mgcViz` package
+
+```{r}
+p_load(mgcViz)
+
+p <- getViz(m1)
+
+plot(p, select = 1)
+
+plot(p, select = 2)  
+
+p <- getViz(m2)
+
+plot(p)
+
+p_unload(mgcViz)
+```
+# `visibly` package
+
+```{r}
+p_load(visibly)
+
+plot_gam(m1, main_var = x2)
+
+plot_gam_check(m1)
+
+plot_gam_by(m2, main_var = x2, by_var = fac)  
+
+plot_gam_check(m2)
+
+p_unload(visibly)
+```
