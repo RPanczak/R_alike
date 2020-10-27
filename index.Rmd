@@ -1,0 +1,18 @@
+---
+title: "R_alike project 03"
+description: "Comparator of selected things done in R via different packages"
+date: "`r Sys.Date()`"
+author:
+  - name: Radoslaw Panczak 
+    url: https://github.com/RPanczak
+    affiliation: ISPM
+    affiliation_url: https://www.ispm.unibe.ch/
+    orcid_id: 0000-0001-5141-683X
+output:
+  distill::distill_article:
+    highlight: pygments
+    toc: true
+    toc_depth: 1
+    number_sections: true
+---
+ 
