@@ -1,5 +1,8 @@
 # R_alike
-comparing R ways of doing things
+
+Comparing R ways of doing things. 
+
+Website: https://rpanczak.github.io/R_alike/  
 
 [![CC BY-NC-SA 4.0][cc-by-nc-sa-image]][cc-by-nc-sa]
 
