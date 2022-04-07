@@ -1,0 +1,48 @@
+---
+editor_options: 
+  chunk_output_type: console
+---
+
+# Visualizing missing data 
+
+Largely based on contributions from this SO [thread](https://stackoverflow.com/questions/8317231/elegant-way-to-report-missing-values-in-a-data-frame)
+
+## Example data
+
+Using `riskfactors` dataset from `naniar` package.  
+
+```{r}
+data(riskfactors, package = "naniar")
+```
+
+```{r}
+str(riskfactors)
+```
+
+
+## `naniar` package
+
+```{r}
+library(naniar)
+library(ggplot2)
+```
+
+### Upset plot
+
+```{r}
+gg_miss_upset(riskfactors)
+```
+
+### Scatterplot with missings
+
+```{r}
+ggplot(riskfactors,
+       aes(x = weight_lbs,
+           y = height_inch)) +
+ geom_miss_point()
+```
+
+```{r}
+gg_miss_fct(x = riskfactors, fct = marital)
+```
+
