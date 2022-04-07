@@ -17,20 +17,36 @@ output:
     number_sections: true
 editor_options: 
   chunk_output_type: console
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = "../docs") })
 ---
   
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = TRUE, 
-                      # fig.width=8, fig.height=6, 
-                      # out.width="800px", out.height="600px",
-                      dpi=300)
-
-knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
-
+```{r rsetup, include=FALSE}
 options(scipen=999)
 set.seed(12345)
 
 library(pacman)
+```
+
+```{r conflicts, include = FALSE}
+# tidyverse::tidyverse_conflicts()
+
+conflicted::conflict_scout()
+```
+
+```{r knit-setup, include = FALSE}
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+
+knitr::opts_chunk$set(cache = FALSE,
+                      prompt = FALSE,
+                      tidy = FALSE,
+                      comment = NA,
+                      message = FALSE,
+                      warning = FALSE,
+                      echo = TRUE,
+                      dpi=300)
+
+knitr::opts_knit$set(width = 75)
 ```
 
 <!-- ------------------------------------------ -->
