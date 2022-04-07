@@ -1,0 +1,22 @@
+--- 
+title: "R alike"
+author: "Radoslaw Panczak"
+date: "2022-04-07"
+site: bookdown::bookdown_site
+documentclass: book
+bibliography: [book.bib, packages.bib]
+# url: your book url like https://bookdown.org/yihui/bookdown
+# cover-image: path to the social sharing image like images/cover.jpg
+description: |
+  Comparing R ways of doing things.
+link-citations: yes
+github-repo: RPanczak/R_alike
+---
+
+# About
+
+Comparing R ways of doing things.
+
+## Motivation
+
+

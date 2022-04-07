@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>R alike</title>
+  <title>Chapter 3 Visualizing missing data | R alike</title>
   <meta name="description" content="Comparing R ways of doing things." />
   <meta name="generator" content="bookdown 0.25 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="R alike" />
+  <meta property="og:title" content="Chapter 3 Visualizing missing data | R alike" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="Comparing R ways of doing things." />
   <meta name="github-repo" content="RPanczak/R_alike" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="R alike" />
+  <meta name="twitter:title" content="Chapter 3 Visualizing missing data | R alike" />
   
   <meta name="twitter:description" content="Comparing R ways of doing things." />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
-<link rel="next" href="dataset-overview.html"/>
+<link rel="prev" href="dataset-overview.html"/>
+<link rel="next" href="parts.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -217,17 +217,70 @@ div.csl-indent {
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">R alike</h1>
-<p class="author"><em>Radoslaw Panczak</em></p>
-<p class="date"><em>2022-04-07</em></p>
+<div id="visualizing-missing-data" class="section level1 hasAnchor" number="3">
+<h1><span class="header-section-number">Chapter 3</span> Visualizing missing data<a href="visualizing-missing-data.html#visualizing-missing-data" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Largely based on contributions from this SO <a href="https://stackoverflow.com/questions/8317231/elegant-way-to-report-missing-values-in-a-data-frame">thread</a></p>
+<div id="example-data-1" class="section level2 hasAnchor" number="3.1">
+<h2><span class="header-section-number">3.1</span> Example data<a href="visualizing-missing-data.html#example-data-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Using <code>riskfactors</code> dataset from <code>naniar</code> package.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="visualizing-missing-data.html#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(riskfactors, <span class="at">package =</span> <span class="st">&quot;naniar&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="visualizing-missing-data.html#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(riskfactors)</span></code></pre></div>
+<pre><code>## Classes &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;:    245 obs. of  34 variables:
+##  $ state           : Factor w/ 52 levels &quot;1&quot;,&quot;2&quot;,&quot;5&quot;,&quot;6&quot;,..: 22 36 52 38 28 15 40 50 14 5 ...
+##  $ sex             : Factor w/ 2 levels &quot;Male&quot;,&quot;Female&quot;: 2 2 2 1 2 1 1 2 1 2 ...
+##  $ age             : int  49 48 55 42 66 66 37 62 38 42 ...
+##  $ weight_lbs      : int  190 170 163 230 135 165 150 170 146 260 ...
+##  $ height_inch     : int  64 68 64 74 62 70 68 70 70 73 ...
+##  $ bmi             : num  32.7 25.9 28 29.6 24.7 ...
+##  $ marital         : Factor w/ 6 levels &quot;Married&quot;,&quot;Divorced&quot;,..: 1 2 1 1 3 1 1 5 1 4 ...
+##  $ pregnant        : Factor w/ 2 levels &quot;Yes&quot;,&quot;No&quot;: NA NA NA NA NA NA NA NA NA 2 ...
+##  $ children        : int  0 0 0 1 0 0 3 0 2 3 ...
+##  $ education       : Factor w/ 6 levels &quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,..: 6 5 4 6 5 5 6 6 4 5 ...
+##  $ employment      : Factor w/ 7 levels &quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,..: 2 1 5 1 1 6 2 6 1 3 ...
+##  $ income          : Factor w/ 10 levels &quot;&lt;10k&quot;,&quot;10-15k&quot;,..: 6 6 1 8 7 6 8 1 7 3 ...
+##  $ veteran         : Factor w/ 5 levels &quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,..: 5 5 5 5 5 3 5 5 5 5 ...
+##  $ hispanic        : Factor w/ 2 levels &quot;Yes&quot;,&quot;No&quot;: 2 2 1 2 2 2 2 2 2 2 ...
+##  $ health_general  : Factor w/ 6 levels &quot;Excellent&quot;,&quot;VeryGood&quot;,..: 3 4 4 1 1 1 2 5 5 3 ...
+##  $ health_physical : int  3 4 0 0 0 0 0 30 30 0 ...
+##  $ health_mental   : int  15 30 0 0 0 0 0 30 30 20 ...
+##  $ health_poor     : int  2 3 NA NA NA NA NA 30 14 4 ...
+##  $ health_cover    : Factor w/ 2 levels &quot;Yes&quot;,&quot;No&quot;: 1 1 1 1 1 1 1 2 1 1 ...
+##  $ provide_care    : Factor w/ 2 levels &quot;Yes&quot;,&quot;No&quot;: 2 2 2 2 2 2 1 2 2 2 ...
+##  $ activity_limited: Factor w/ 2 levels &quot;Yes&quot;,&quot;No&quot;: 1 2 2 2 2 2 2 2 1 NA ...
+##  $ drink_any       : Factor w/ 2 levels &quot;Yes&quot;,&quot;No&quot;: 2 2 2 1 2 2 1 2 2 NA ...
+##  $ drink_days      : int  NA NA NA 15 NA NA 2 NA NA NA ...
+##  $ drink_average   : int  NA NA NA NA NA NA 2 NA NA NA ...
+##  $ smoke_100       : Factor w/ 2 levels &quot;Yes&quot;,&quot;No&quot;: 2 2 2 2 1 2 2 1 1 1 ...
+##  $ smoke_days      : Factor w/ 3 levels &quot;Everyday&quot;,&quot;Somedays&quot;,..: NA NA NA NA 1 NA NA 3 1 3 ...
+##  $ smoke_stop      : Factor w/ 2 levels &quot;Yes&quot;,&quot;No&quot;: NA NA NA NA 1 NA NA NA 1 NA ...
+##  $ smoke_last      : Factor w/ 6 levels &quot;3&quot;,&quot;4&quot;,&quot;5&quot;,&quot;6&quot;,..: NA NA NA NA NA NA NA 5 NA 3 ...
+##  $ diet_fruit      : int  1095 52 36 NA -7 24 52 156 24 NA ...
+##  $ diet_salad      : int  261 209 156 NA 261 52 156 24 84 NA ...
+##  $ diet_potato     : int  104 52 52 NA 209 104 24 52 144 NA ...
+##  $ diet_carrot     : int  156 0 24 NA 261 52 24 104 24 NA ...
+##  $ diet_vegetable  : int  521 52 24 NA 365 365 730 365 0 NA ...
+##  $ diet_juice      : int  12 0 24 NA 104 365 104 0 0 NA ...</code></pre>
 </div>
-<div id="about" class="section level1 hasAnchor" number="1">
-<h1><span class="header-section-number">Chapter 1</span> About<a href="index.html#about" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p>Comparing R ways of doing things.</p>
-<div id="motivation" class="section level2 hasAnchor" number="1.1">
-<h2><span class="header-section-number">1.1</span> Motivation<a href="index.html#motivation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="naniar-package" class="section level2 hasAnchor" number="3.2">
+<h2><span class="header-section-number">3.2</span> <code>naniar</code> package<a href="visualizing-missing-data.html#naniar-package" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="visualizing-missing-data.html#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(naniar)</span>
+<span id="cb10-2"><a href="visualizing-missing-data.html#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code></pre></div>
+<div id="upset-plot" class="section level3 hasAnchor" number="3.2.1">
+<h3><span class="header-section-number">3.2.1</span> Upset plot<a href="visualizing-missing-data.html#upset-plot" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="visualizing-missing-data.html#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gg_miss_upset</span>(riskfactors)</span></code></pre></div>
+<p><img src="02-missing-data_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+<div id="scatterplot-with-missings" class="section level3 hasAnchor" number="3.2.2">
+<h3><span class="header-section-number">3.2.2</span> Scatterplot with missings<a href="visualizing-missing-data.html#scatterplot-with-missings" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="visualizing-missing-data.html#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(riskfactors,</span>
+<span id="cb12-2"><a href="visualizing-missing-data.html#cb12-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> weight_lbs,</span>
+<span id="cb12-3"><a href="visualizing-missing-data.html#cb12-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> height_inch)) <span class="sc">+</span></span>
+<span id="cb12-4"><a href="visualizing-missing-data.html#cb12-4" aria-hidden="true" tabindex="-1"></a> <span class="fu">geom_miss_point</span>()</span></code></pre></div>
+<p><img src="02-missing-data_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="visualizing-missing-data.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gg_miss_fct</span>(<span class="at">x =</span> riskfactors, <span class="at">fct =</span> marital)</span></code></pre></div>
+<p><img src="02-missing-data_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 
+</div>
 </div>
 </div>
             </section>
@@ -235,8 +288,8 @@ div.csl-indent {
           </div>
         </div>
       </div>
-
-<a href="dataset-overview.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="dataset-overview.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="parts.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -267,7 +320,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/RPanczak/R_alike/edit/master/index.Rmd",
+"link": "https://github.com/RPanczak/R_alike/edit/master/02-missing-data.Rmd",
 "text": "Edit"
 },
 "history": {
